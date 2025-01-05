@@ -60,5 +60,6 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "plugin": "com.axalotl.async.mixin.utils.SynchronisePlugin"
 }

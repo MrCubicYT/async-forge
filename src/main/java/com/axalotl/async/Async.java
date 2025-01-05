@@ -4,7 +4,9 @@ import com.axalotl.async.commands.AsyncCommand;
 import com.axalotl.async.commands.ConfigCommand;
 import com.axalotl.async.commands.StatsCommand;
 import com.axalotl.async.config.AsyncConfig;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.logging.LogUtils;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -43,9 +45,11 @@ public class Async {
     }
 
     @SubscribeEvent
-    public static void onCommandsRegister(RegisterCommandsEvent event) {
-        AsyncCommand.register(event.getDispatcher());
-        event.getDispatcher().register(ConfigCommand.registerConfig(Commands.literal("async")));
+    public void registerCommandsEvent(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+
+        AsyncCommand.register(dispatcher, true);
+        dispatcher.register(ConfigCommand.registerConfig(Commands.literal("async")));
     }
 
     @SubscribeEvent
