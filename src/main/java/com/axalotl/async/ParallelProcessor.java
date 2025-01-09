@@ -1,13 +1,11 @@
 package com.axalotl.async;
 
 import com.axalotl.async.config.AsyncConfig;
-import com.axalotl.async.mixin.BlockableEventLoopInvoker;
 import com.axalotl.async.parallelised.ConcurrentCollections;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -129,8 +127,8 @@ public class ParallelProcessor {
                     return null;
                 });
                 server.getAllLevels().forEach(world -> {
-                    BlockableEventLoop<Runnable> mainThreadProcessor = world.getChunkSource().mainThreadProcessor;
-                    ((BlockableEventLoopInvoker) mainThreadProcessor).invokeManagedBlock(allTasks::isDone);
+                    world.getChunkSource().pollTask();
+                    world.getChunkSource().mainThreadProcessor.managedBlock(allTasks::isDone);
                 });
             } catch (CompletionException e) {
                 LOGGER.error("Critical error during entity tick processing", e);
